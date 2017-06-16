@@ -26,12 +26,8 @@ class Que:
 
 
 def getTHWN():
-    F = open('./cheese/input.txt', 'r')
-    line = F.readline()
-    items = line.split(' ')
-    H = int(items[0])
-    W = int(items[1])
-    N = int(items[2])
+
+    H, W, N = [int(i) for i in input().split()]
 
     goals = [0 for i in range(N + 1)]
 
@@ -39,7 +35,7 @@ def getTHWN():
     table = []
 
     for i in range(H):
-        line = F.readline()
+        line = input()
         for j in range(W):
             if line[j] == '.':
                 row.append(A)
