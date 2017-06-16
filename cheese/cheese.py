@@ -1,16 +1,8 @@
-"""
-HOGEHOGE
-
-H, W, N = [int(i) for i in input().split()]
-print(type(N), H)
-print(type(W), W)
-print(type(N), N)
-"""
 A = '.'
 S = 'S'
 X = 'X'
 
-INF = 1000000
+INF = -1
 
 DX = [1, 0, -1, 0]
 DY = [0, 1, 0, -1]
@@ -34,12 +26,14 @@ class Que:
 
 
 def getTHWN():
-    F = open('./input.txt', 'r')
+    F = open('./cheese/input.txt', 'r')
     line = F.readline()
     items = line.split(' ')
     H = int(items[0])
     W = int(items[1])
     N = int(items[2])
+
+    goals = [0 for i in range(N + 1)]
 
     row = []
     table = []
@@ -50,17 +44,19 @@ def getTHWN():
             if line[j] == '.':
                 row.append(A)
             elif line[j] == 'S':
+                goals[0] = [i, j]
                 row.append(S)
             elif line[j] == 'X':
                 row.append(X)
             else:
                 row.append(int(line[j]))
+                goals[int(line[j])] = [i, j]
         table.append(row)
         row = []
-    return table, H, W, N
+    return table, H, W, N, goals
 
 
-def SolveMaze(Table, start, goal, H, W):
+def SolveMaze(table, start, goal, H, W):
 
     q = Que()
 
@@ -83,23 +79,19 @@ def SolveMaze(Table, start, goal, H, W):
             break
 
         for i in range(4):
-            nextcell = cell + [DX[i], DY[i]]
+            nextcell = [cell[0] + DX[i], cell[1] + DY[i]]
             if nextcell[0] >= 0 and nextcell[0] <= H - 1 and nextcell[1] >= 0 and nextcell[1] <= W - 1:
                 if cost[nextcell[0]][nextcell[1]] == INF and table[nextcell[0]][nextcell[1]] != X:
                     cost[nextcell[0]][nextcell[1]] = cost[cell[0]][cell[1]] + 1
+                    q.push(nextcell)
 
     return cost[goal[0]][goal[1]]
 
 
-table, h, w, n = getTHWN()
+table, h, w, n, cheese = getTHWN()
 
-print(h, w, n)
-
-for i in table:
-    for j in i:
-        print(j, end='')
-    print()
-
-ans = SolveMaze(table, [0, 0], [2, 2], h, w)
+ans = 0
+for i in range(len(cheese) - 1):
+    ans += SolveMaze(table, cheese[i], cheese[i + 1], h, w)
 
 print(ans)
